@@ -1,33 +1,35 @@
 ///<reference types="cypress" />
+
 import 'cypress-xpath';
+import PageOlx from '../page-objects/PageOlx'
 
 describe("Testes FreteBras", () => {
+  const olx= new PageOlx()
 
   it("Abrir pagina OLX", () => {
-   cy.visit("https://www.olx.com.br/");
-   //cy.wait(50000)
-  })
+    olx.visit()
+   })
 
   Cypress.on('uncaught:exception', (err, runnable) => {
-    return false
+   return false
   })
 
   it("Validar titulo da pagina", () => {
     cy.title().should('contain', 'OLX - O Maior Site de Compra e Venda do Brasil')
-    timeout: 50000;
+    cy.wait(500);
   })
 
   it("Digitar texto para pesquisar", () => {
-  cy.get('input[name="q"]').focus().type('iphone')
-  timeout: 50000;
-  cy.get('button[class="submitBtn"]').click()
+    olx.pesquisa('iphone')
+    cy.wait(500);
+    olx.submit()
   })
 
   it("Imprimir os 5 primeiros resultados", () => {
     cy.wait(500);
     cy.get('#content > div > div.col2.sc-15vff5z-5.fFdJjk > div.sc-1fcmfeb-0.WQhDk > ul > li:nth-child(1) > a > div > div.fnmrjs-7.cfjFVu > div.fnmrjs-9.eFXSRz').then((resultado1) => {
-      cy.log(resultado1.text())
-    });
+     cy.log(resultado1.text())
+     });
 
     cy.get('#content > div > div.col2.sc-15vff5z-5.fFdJjk > div.sc-1fcmfeb-0.WQhDk > ul > li:nth-child(2) > a > div > div.fnmrjs-7.cfjFVu > div.fnmrjs-9.eFXSRz').then((resultado2) => {
      cy.log(resultado2.text())
@@ -48,9 +50,9 @@ describe("Testes FreteBras", () => {
   })
 
   it("Print do primeiro anuncio da segunda pagina", () => {
-  cy.xpath('//*[@id="content"]/div/div[2]/div[12]/ul/li[16]/a').click()
+  olx.proxPagina()  
   cy.wait(500);
-  cy.get('#content > div > div.col2.sc-15vff5z-5.fFdJjk > div.sc-1fcmfeb-0.WQhDk > ul > li:nth-child(1) > a > div').first().screenshot();
+  olx.resultado2Pag()
   
 })
 
